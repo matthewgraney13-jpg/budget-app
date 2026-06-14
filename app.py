@@ -23,7 +23,7 @@ st.markdown("""
         box-shadow: 0px 4px 12px rgba(0,0,0,0.05); border-left: 5px solid #4A90E2;
     }
     </style>
-""", unsafe_transform=True)
+""", unsafe_allow_html=True)
 
 # App Title & Welcoming Header
 st.markdown("<h1>🚀 Matt & Kait's Financial Runway</h1>", unsafe_allow_html=True)
