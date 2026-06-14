@@ -2,182 +2,222 @@ import streamlit as st
 import pandas as pd
 import os
 
-# --- ADVANCED MOBI-FIRST DESIGN SYSTEM ---
-st.set_page_config(page_title="Matt & Kait", layout="centered")
+# --- VIBRANT & CUTE DESIGN SYSTEM ---
+st.set_page_config(page_title="Matt & Kait's Runway", layout="centered")
 
-# Custom CSS to force a gorgeous, clean, mobile-first design layout
+# Injecting the bright, playful aesthetic with custom CSS
 st.markdown("""
     <style>
-    /* Global Background & Font Reset */
-    .main { background-color: #F4F7FA; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    /* Gradient Background & Soft Fonts */
+    .main { 
+        background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+    }
     .block-container { padding-top: 1.5rem !important; padding-bottom: 2rem !important; max-width: 480px !important; }
     
-    /* Sleek Title Card */
-    .app-title { text-align: center; color: #0F172A; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; }
-    .app-subtitle { text-align: center; color: #64748B; font-size: 13px; margin-bottom: 20px; }
-    
-    /* Clean iOS Card Layouts */
-    div[data-testid="stMetricValue"] { font-size: 22px !important; font-weight: 700 !important; color: #0F172A !important; }
-    div[data-testid="stMetricLabel"] { font-size: 12px !important; font-weight: 600 !important; color: #64748B !important; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stMetric {
-        background-color: #FFFFFF !important; padding: 16px !important; border-radius: 16px !important;
-        box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.04) !important; border: 1px solid #E2E8F0 !important;
+    /* Playful Header Banner */
+    .header-box {
+        background: linear-gradient(135deg, #FF758C 0%, #FF7EB3 100%);
+        padding: 24px; border-radius: 24px; text-align: center;
+        box-shadow: 0px 10px 25px rgba(255, 117, 140, 0.3); margin-bottom: 25px;
     }
+    .app-title { color: #FFFFFF; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; }
+    .app-subtitle { color: #FFE4E8; font-size: 13px; font-weight: 500; }
     
-    /* Action Button Makeover */
-    div.stButton > button:first-child {
-        background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%); color: white; 
-        border-radius: 14px; padding: 12px; font-weight: 700; border: none; width: 100%;
-        box-shadow: 0px 4px 12px rgba(59, 130, 246, 0.3); font-size: 15px; margin-top: 15px;
-    }
-    div.stButton > button:first-child:hover { background: #1D4ED8; color: white; }
-    
-    /* Custom Card Containers */
+    /* Cute Rounded Cards */
     .section-card {
-        background-color: #FFFFFF; padding: 16px; border-radius: 16px;
-        border: 1px solid #E2E8F0; margin-bottom: 15px;
+        background-color: #FFFFFF; padding: 20px; border-radius: 20px;
+        border: none; box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.04); margin-bottom: 20px;
     }
     
-    /* Hide Default Side Navigation Clutter on Tiny Mobile Screens */
-    .css-163e8hi { background-color: #FFFFFF; }
-    hr { margin: 15px 0 !important; border-top: 1px solid #E2E8F0 !important; }
+    /* Custom Metric Badges */
+    div[data-testid="stMetricValue"] { font-size: 24px !important; font-weight: 800 !important; color: #1E293B !important; }
+    div[data-testid="stMetricLabel"] { font-size: 12px !important; font-weight: 700 !important; color: #64748B !important; }
+    .stMetric {
+        background-color: #FFFFFF !important; padding: 16px !important; border-radius: 18px !important;
+        box-shadow: 0px 6px 15px rgba(0,0,0,0.03) !important; border-top: 4px solid #FF758C !important;
+    }
+    
+    /* Big Happy Interactive Buttons */
+    div.stButton > button:first-child {
+        background: linear-gradient(135deg, #FF758C 0%, #FF7EB3 100%); color: white; 
+        border-radius: 16px; padding: 12px; font-weight: 700; border: none; width: 100%;
+        box-shadow: 0px 6px 15px rgba(255, 117, 140, 0.4); font-size: 15px; margin-top: 10px;
+        transition: all 0.3s ease;
+    }
+    div.stButton > button:first-child:hover { transform: translateY(-2px); box-shadow: 0px 8px 20px rgba(255, 117, 140, 0.5); }
+    
+    /* Cute slider look modification */
+    .stSlider > div [data-baseweb="slider"] { background-color: #FFE4E8; }
     </style>
 """, unsafe_allow_html=True)
 
-# App Branding Headers
-st.markdown("<div class='app-title'>🚀 Matt & Kait's Runway</div>", unsafe_allow_html=True)
-st.markdown("<div class='app-subtitle'>Your simple, high-speed financial tracker</div>", unsafe_allow_html=True)
+# App Branding Banner Block
+st.markdown("""
+    <div class='header-box'>
+        <div class='app-title'>✨ Matt & Kait's Runway ✨</div>
+        <div class='app-subtitle'>💖 Tracking our dreams & pocket money together 💖</div>
+    </div>
+""", unsafe_allow_html=True)
 
-# Data Log Configuration 
-DATA_FILE = "budget_history.csv"
-def load_data():
-    if os.path.exists(DATA_FILE): return pd.read_csv(DATA_FILE)
-    return pd.DataFrame(columns=["Month", "Situation", "Matt_Pocket", "Kait_Pocket", "Joint_Savings", "MacBook_Savings"])
+# --- LOCAL STORAGE FILES ---
+BUDGET_FILE = "budget_history.csv"
+EXPENSE_FILE = "expense_logs.csv"
 
-def save_data(df): df.to_csv(DATA_FILE, index=False)
-history_df = load_data()
+def load_data(file, columns):
+    if os.path.exists(file): return pd.read_csv(file)
+    return pd.DataFrame(columns=columns)
 
-# --- APP NAVIGATION CENTER ---
-st.sidebar.markdown("### 🧭 App View")
-app_mode = st.sidebar.radio("Jump To View:", ["✨ Live App Dashboard", "📊 Our Monthly Logs"])
+history_df = load_data(BUDGET_FILE, ["Month", "Situation", "Matt_Pocket", "Kait_Pocket", "Joint_Savings", "MacBook_Savings"])
+expense_df = load_data(EXPENSE_FILE, ["Who", "What", "Amount", "Category"])
+
+# --- SIDEBAR CONTROL CENTER ---
+st.sidebar.markdown("### 🗺️ App Navigation")
+app_mode = st.sidebar.radio("Jump To View:", ["💖 Live App Dashboard", "🛍️ Log a New Purchase", "📊 Our Monthly Logs"])
 phase = st.sidebar.radio("Living Setup:", ["📍 Phase 1: At Parents", "🔑 Phase 2: Our Own Flat"])
 
-# Clean Salary Segment Inputs
-st.markdown("### 💰 Monthly Paychecks")
-col1, col2 = st.columns(2)
-with col1: m_net = st.number_input("Matt's Net (R):", value=33880, step=100)
-with col2: p_net = st.number_input("Kait's Net (R):", value=15100, step=100)
+# Base Salaries
+m_net, p_net, m_fixed_bills = 33880, 15100, 12120
 
-m_fixed_bills = 12120
+# Calculate Live Baselines depending on the active phase setup
+if phase == "📍 Phase 1: At Parents":
+    parent_rent = 4000
+    m_save_base, p_save_base, mac_save_base = 12000, 7500, 4000
+    m_calc_pocket = m_net - m_fixed_bills - parent_rent - m_save_base
+    p_calc_pocket = p_net - p_save_base - mac_save_base
+    total_saved_this_month = m_save_base + p_save_base
+else:
+    target_rent, household_utilities = 13000, 6500
+    total_household = target_rent + household_utilities
+    m_share, p_share = int(total_household * 0.69), int(total_household * 0.31)
+    m_uk, p_uk = 3200, 1400
+    m_calc_pocket = m_net - m_fixed_bills - m_share - m_uk
+    p_calc_pocket = p_net - p_share - p_uk
+    total_saved_this_month = m_uk + p_uk
+    mac_save_base = 0
+
+# Deduct cumulative daily items from running pocket balances
+matt_total_spent = expense_df[expense_df["Who"] == "Matt"]["Amount"].sum()
+kait_total_spent = expense_df[expense_df["Who"] == "Kait"]["Amount"].sum()
+
+m_final_pocket = m_calc_pocket - matt_total_spent
+p_final_pocket = p_calc_pocket - kait_total_spent
 
 # -------------------------------------------------------------
-# MODE 1: LIVE INTERACTIVE APP DASHBOARD
+# VIEW 1: LIVE APP DASHBOARD
 # -------------------------------------------------------------
-if app_mode == "✨ Live App Dashboard":
+if app_mode == "💖 Live App Dashboard":
     
     if phase == "📍 Phase 1: At Parents":
-        st.caption("✨ Living at Parents: Max savings mode for UK tickets & MacBook Air.")
-        parent_rent = 4000
+        st.markdown("### 🏡 Phase 1: Parent Basecamp")
+        st.write("✨ Max savings mode for UK tickets & Kait's MacBook Air!")
         
-        st.markdown("### 🎛️ Allocation Sliders")
-        m_save = st.slider("Matt to Joint Savings (R):", 5000, 15000, 12000, 500)
-        p_save = st.slider("Kait to Joint Savings (R):", 3000, 10000, 7500, 500)
-        macbook_save = st.slider("Kait to MacBook Stash (R):", 1000, 6000, 4000, 500)
-            
-        m_leftover = m_net - m_fixed_bills - parent_rent - m_save
-        p_leftover = p_net - p_save - macbook_save
+        st.markdown("### 🎛️ Adjust Allocations for This Month")
+        m_save = st.slider("Matt's Joint Savings Target (R):", 5000, 15000, 12000, 500)
+        p_save = st.slider("Kait's Joint Savings Target (R):", 3000, 10000, 7500, 500)
+        macbook_save = st.slider("Kait's MacBook Air Target (R):", 1000, 6000, 4000, 500)
+        
+        # Recalculate with slider changes
+        m_calc_pocket = m_net - m_fixed_bills - 4000 - m_save
+        p_calc_pocket = p_net - p_save - macbook_save
+        m_final_pocket = m_calc_pocket - matt_total_spent
+        p_final_pocket = p_calc_pocket - kait_total_spent
         total_saved_this_month = m_save + p_save
-        
     else:
-        st.caption("🏡 Renting Together: Splitting household bills proportionally (~69% / 31%).")
+        st.markdown("### 🔑 Phase 2: Our Own Apartment")
+        st.write("✨ Living beautifully in Bellville/Durbanville with a fair proportional split.")
         
-        target_rent = st.slider("Test Rental Price (R):", 9000, 16000, 13000, 500)
-        household_utilities = st.slider("Groceries, Lights & Wi-Fi (R):", 4000, 9000, 6500, 250)
-        
-        total_household_cost = target_rent + household_utilities
-        m_prop_share = int(total_household_cost * 0.69)
-        p_prop_share = int(total_household_cost * 0.31)
-        
-        # Display the proportional split calculation in a clean block
         st.markdown(f"""
         <div class='section-card'>
-            <span style='color:#64748B; font-size:12px; font-weight:700;'>PROPORTIONAL BILL SPLIT</span><br>
-            <span style='font-size:14px; color:#0F172A;'>• Matt Pays (69%): <b>R{m_prop_share:,}</b></span><br>
-            <span style='font-size:14px; color:#0F172A;'>• Kait Pays (31%): <b>R{p_prop_share:,}</b></span>
+            <span style='color:#FF758C; font-size:12px; font-weight:700;'>🏡 OUR ESTIMATED BILLS SPLIT</span><br>
+            <span style='font-size:15px; color:#1E293B;'>• Matt Pays (69% Share): <b>R{int((13000+6500)*0.69):,}</b></span><br>
+            <span style='font-size:15px; color:#1E293B;'>• Kait Pays (31% Share): <b>R{int((13000+6500)*0.31):,}</b></span>
         </div>
         """, unsafe_allow_html=True)
-        
-        st.markdown("### ✈️ Travel Contributions")
-        col_s1, col_s2 = st.columns(2)
-        with col_s1: m_uk_save = st.number_input("Matt UK Save (R):", value=3200, step=100)
-        with col_s2: p_uk_save = st.number_input("Kait UK Save (R):", value=1400, step=100)
-            
-        m_leftover = m_net - m_fixed_bills - m_prop_share - m_uk_save
-        p_leftover = p_net - p_prop_share - p_uk_save
-        total_saved_this_month = m_uk_save + p_uk_save
-        macbook_save = 0
 
-    # DISPLAY REMAINING SPENDING CASH POCKETS
-    st.markdown("---")
-    st.markdown("### 💎 Available Pocket Money")
+    # SHOW ACCUMULATED BALANCES
+    st.markdown("### 🍉 Available Running Pocket Money")
+    st.caption("This factors in all your individual daily fun purchases logged below!")
     cm1, cm2 = st.columns(2)
-    with cm1: st.metric(label="Matt's Cash Left", value=f"R{m_leftover:,}")
-    with cm2: st.metric(label="Kait's Cash Left", value=f"R{p_leftover:,}")
+    with cm1: st.metric(label="Matt's Cash Remaining", value=f"R{m_final_pocket:,}")
+    with cm2: st.metric(label="Kait's Cash Remaining", value=f"R{p_final_pocket:,}")
         
     st.markdown("---")
     st.markdown("### 🎯 Core Target Progress")
-    
-    st.write(f"**Joint Monthly Travel Stash:** R{total_saved_this_month:,} / R19,500 target")
+    st.write(f"**✈️ Shared UK Ticket Pot:** R{total_saved_this_month:,} / R19,500 target")
     st.progress(min(1.0, total_saved_this_month / 19500))
     
     if phase == "📍 Phase 1: At Parents":
-        st.write(f"**Kait's MacBook Fund Allocation:** R{macbook_save:,} / R4,000 target")
+        st.write(f"**💻 Kait's MacBook Fund:** R{macbook_save:,} / R4,000 target")
         st.progress(min(1.0, macbook_save / 4000))
 
-    # --- SIMPLIFIED LOGGING PANEL ---
+    # LOCK MONTH BUTTON
     st.markdown("---")
-    st.markdown("### 🔒 Log This Month")
-    month_select = st.selectbox("Select Active Month:", [f"Month {i}" for i in range(1, 13)])
-    
-    if st.button("Commit Current Month to Record Logs"):
+    st.markdown("### 🔒 Lock This Month")
+    month_select = st.selectbox("Which Month are we closing?", [f"Month {i}" for i in range(1, 13)])
+    if st.button("Commit This Month to History"):
         history_df = history_df[history_df["Month"] != month_select]
-        new_row = {
-            "Month": month_select, "Situation": phase,
-            "Matt_Pocket": m_leftover, "Kait_Pocket": p_leftover,
-            "Joint_Savings": total_saved_this_month, "MacBook_Savings": macbook_save
-        }
+        new_row = {"Month": month_select, "Situation": phase, "Matt_Pocket": m_final_pocket, "Kait_Pocket": p_final_pocket, "Joint_Savings": total_saved_this_month, "MacBook_Savings": macbook_save_base}
         history_df = pd.concat([history_df, pd.DataFrame([new_row])], ignore_index=True)
-        save_data(history_df)
+        history_df.to_csv(BUDGET_FILE, index=False)
         st.balloons()
-        st.success(f"Log sheet metrics for {month_select} saved securely!")
+        st.success(f"Log metrics for {month_select} locked down!")
 
 # -------------------------------------------------------------
-# MODE 2: VISUAL HISTORICAL OVERVIEW
+# VIEW 2: CUTE EXPENSE LOGGER
+# -------------------------------------------------------------
+elif app_mode == "🛍️ Log a New Purchase":
+    st.markdown("### 🧁 Fun Expense Logger & Piggy Bank")
+    st.write("Did you buy a coffee, go on a date, or shop? Drop it here to instantly slice it from your pocket cash balance!")
+    
+    with st.form("expense_form", clear_on_submit=True):
+        who_spent = st.radio("Who spent the money? 🤔", ["Matt", "Kait"])
+        item_name = st.text_input("What did you buy? ☕🛍️", placeholder="e.g., Starbucks, Woolies, Fuel")
+        spent_amount = st.number_input("Amount (Rands):", min_value=0, value=150, step=10)
+        item_cat = st.selectbox("Category Group:", ["Date Night & Food", "Fuel & Petrol", "Shopping & Fun", "Other Stuff"])
+        
+        submit_expense = st.form_submit_form_button = st.form_submit_button("Add to My Daily Logs 💸")
+        
+        if submit_expense and item_name:
+            new_exp = {"Who": who_spent, "What": item_name, "Amount": spent_amount, "Category": item_cat}
+            expense_df = pd.concat([expense_df, pd.DataFrame([new_exp])], ignore_index=True)
+            expense_df.to_csv(EXPENSE_FILE, index=False)
+            st.success(f"Logged R{spent_amount} for '{item_name}' under {who_spent}'s account!")
+            st.rerun()
+
+    st.markdown("---")
+    st.markdown("### 📜 Running Purchases This Month")
+    if expense_df.empty:
+        st.caption("No custom shopping logged yet! Everything spent so far is clear.")
+    else:
+        st.dataframe(expense_df, use_container_width=True)
+        if st.sidebar.button("🧹 Clear All Daily Purchases"):
+            if os.path.exists(EXPENSE_FILE): os.remove(EXPENSE_FILE)
+            st.rerun()
+
+# -------------------------------------------------------------
+# VIEW 3: MONTHLY HISTORY LOGS
 # -------------------------------------------------------------
 else:
-    st.markdown("### 📈 Running Capital Stack")
+    st.markdown("### 📊 Our Shared History Ledger")
     
     if history_df.empty:
-        st.warning("No recorded logs found yet! Head over to the Live App Dashboard to track your first month.")
+        st.warning("No month entries logged yet! Head to the dashboard view to close out your first month.")
     else:
         total_joint_pool = history_df["Joint_Savings"].sum()
-        total_macbook_pool = history_df["MacBook_Savings"].sum() + 10000 
+        total_macbook_pool = history_df["MacBook_Savings"].sum() + 10000
         
         tc1, tc2 = st.columns(2)
-        with tc1: st.metric("Total Travel Capital Stacked", f"R{total_joint_pool:,}")
+        with tc1: st.metric("Total Travel Cash Saved", f"R{total_joint_pool:,}")
         with tc2: st.metric("Kait's Laptop Fund", f"R{total_macbook_pool:,} / R22,000")
             
         if total_macbook_pool >= 22000:
             st.snow()
-            st.success("💻 MacBook Air completely funded! Enjoy the store run, Kait! 🎉")
+            st.success("💻 MacBook Air fully unlocked! iStore run time! 🎉")
             
         st.markdown("---")
-        st.markdown("### 📅 Historic Database Entries")
+        st.dataframe(history_df.set_index("Month"), use_container_width=True)
         
-        display_df = history_df.copy()
-        display_df.columns = ["Month", "Living Setup", "Matt Cash", "Kait Cash", "Joint Savings", "MacBook Stash"]
-        st.dataframe(display_df.set_index("Month"), use_container_width=True)
-        
-        if st.sidebar.button("⚠️ Reset Database"):
-            if os.path.exists(DATA_FILE): os.remove(DATA_FILE)
+        if st.sidebar.button("⚠️ Reset All Records"):
+            if os.path.exists(BUDGET_FILE): os.remove(BUDGET_FILE)
             st.rerun()
